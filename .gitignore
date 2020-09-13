@@ -1,0 +1,11 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# UnReal Engine created files 
+/Intermediate
+/Binaries
+/Build
+/DerivedDataCache
+/Saved
+
+# Visual Studio files
+/.vs
