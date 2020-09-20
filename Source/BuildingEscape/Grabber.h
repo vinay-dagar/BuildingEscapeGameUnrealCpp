@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Math/Vector.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Components/InputComponent.h"
 #include "Grabber.generated.h"
@@ -40,5 +41,9 @@ private:
 	void FindPhysicsHandleComponent();
 	void SetupInputComponent();
 
-	FHitResult GetFirstPhysicsBodyInReach() const;
+	FHitResult const GetFirstPhysicsBodyInReach();
+
+	FVector GetReachLineEnd();
+	FVector GetReachLineStart();
+
 };

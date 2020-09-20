@@ -20,18 +20,7 @@ void URotateDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	Owner = GetOwner();
-	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 
-}
-
-void URotateDoor::OpenDoor()
-{
-	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
-}
-
-void URotateDoor::CloseDoor()
-{
-	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
 }
 
 
@@ -40,17 +29,30 @@ void URotateDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// if actor overlaps the door 
-		// open the door
-	if (PressurePlate && PressurePlate->IsOverlappingActor(ActorThatOpens))
-	{
-		OpenDoor();
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
-	}
+	if (!PressurePlate) { return; }
 
-	if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay)
+	if (GetTotalMassOfObjectOnPlate() > 35.f)
 	{
-		CloseDoor();
+		OnOpenRequest.Broadcast();
+	} 
+	else
+	{
+		OnCloseRequest.Broadcast();
 	}
 }
 
+float URotateDoor::GetTotalMassOfObjectOnPlate()
+{
+	float TotalMass = 0.f;
+
+	TArray<AActor*> OverlappingActors;
+
+	PressurePlate->GetOverlappingActors(OverlappingActors);
+
+	for (const auto& Actor: OverlappingActors)
+	{
+		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+	}
+
+	return TotalMass;
+}
